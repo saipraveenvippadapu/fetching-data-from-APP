@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import Bpp from "./Bpp";
+import "./App.css";
 
 function App() {
+  let [productlist, updateProductList] = useState([]);
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  async function getProducts() {
+    let res = await fetch("https://fakestoreapi.com/products");
+    let productlist = await res.json();
+    updateProductList(productlist);
+    console.log(res);
+  }
+  if (productlist.length == 0) {
+    return <h1>Fetching productlist ........</h1>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="product-list">
+        {productlist.map((props) => (
+          <Bpp {...props} key={props.id}></Bpp>
+        ))}
+      </div>
+    </>
   );
 }
 
